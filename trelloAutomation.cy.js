@@ -5,7 +5,6 @@ describe('Teste de Automação do Trello Serasa', () => {
     const boardName = 'NEW BOARD SERASA'
     const listName = 'NEW LIST SERASA'
     const cardName = 'NEW CARD SERASA'
-    const cardContent = 'NEW CARD CONTENT SERASA'
     const organizationId = "ID_da_organizacao"
   
    
@@ -16,7 +15,7 @@ describe('Teste de Automação do Trello Serasa', () => {
         name: boardName,
         organizationId: organizationId
       }
-      cy.postRequest('https://api.trello.com/1/boards/',qs ).then((response) => {
+      cy.postRequest('https://api.trello.com/1/boards/', qs ).then((response) => {
         expect(response.status).to.eq(200)
         expect(response.body.name).to.eq(boardName)
         boardId = response.body.id
@@ -36,7 +35,7 @@ describe('Teste de Automação do Trello Serasa', () => {
         expect(response.body.name).to.eq(listName)
         listId = response.body.id
       })
-    })
+    }) 
   
     it('Cadastra um novo Card em uma Lista', () => {
 
@@ -57,33 +56,26 @@ describe('Teste de Automação do Trello Serasa', () => {
 
     it('Exclui um Card da ultima Lista criada', () => {
        lastCardId = cardId;
-    
-          cy.request({
-            method: 'DELETE',
-            url: `https://api.trello.com/1/cards/${lastCardId}`,
-            qs: {
-              key: Cypress.config('TRELLO_API_KEY'), 
-              token: Cypress.config('TRELLO_API_TOKEN')
-            }
-          }).then(response => {
+      const qs= {
+        key: Cypress.config('TRELLO_API_KEY'), 
+        token: Cypress.config('TRELLO_API_TOKEN')
+      }
+
+          cy.deleteRequest(`https://api.trello.com/1/cards/${lastCardId}`,qs).then(response => {
             expect(response.status).to.eq(200);
           });
         });
-   
   
     it('Exclui o ultimo Board', () => {
       lastBoardId = boardId;
 
-      cy.request({
-        method: 'DELETE',
-        url: `https://api.trello.com/1/boards/${lastBoardId}`,
-        qs: {
-          key: Cypress.config('TRELLO_API_KEY'), 
-          token: Cypress.config('TRELLO_API_TOKEN')
-        }
-      }).then((response) => {
+      const qs = {
+        key: Cypress.config('TRELLO_API_KEY'), 
+        token: Cypress.config('TRELLO_API_TOKEN')
+      }
+      cy.deleteRequest(`https://api.trello.com/1/boards/${lastBoardId}`, qs).then((response) => {
         expect(response.status).to.eq(200)
       })
     })
-  })
-  
+  })  
+   
